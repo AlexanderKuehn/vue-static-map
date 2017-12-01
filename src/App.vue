@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
 		<h1>Vue Static Map</h1>
-		<static-map :google-api-key="apiKey" :language="language" v-on:get-url="getUrl" :paths="paths" :format="format" :markers="markers" :zoom="zoom" :center="center" :size="size" :type="type"></static-map>
+		<static-map :styles="styles" :google-api-key="apiKey" :language="language" v-on:get-url="getUrl" :paths="paths" :format="format" :markers="markers" :zoom="zoom" :center="center" :size="size" :type="type"></static-map>
 		<div>
 			<pre>{{url}}</pre>
 		</div>
@@ -52,6 +52,7 @@ export default {
 			type: 'roadmap',
 			url: '',
 			zoom: 13,
+			styles: [{ stylers: [] }, { elementType: 'geometry', stylers: [{ color: '#d2e1d2' }] }, { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] }, { elementType: 'labels.text', stylers: [{ color: '#233b3c' }] }, { elementType: 'labels.text.fill', stylers: [{ color: '#233b3c' }] }, { elementType: 'labels.text.stroke', stylers: [{ color: '#f9f9f9' }] }, { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#c5d2c4' }] }, { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#f9f9f9' }] }, { featureType: 'road.highway', elementType: 'geometry.stroke', stylers: [{ color: '#d0d0cf' }] }, { featureType: 'transit', elementType: 'geometry', stylers: [{ color: '#c5d2c4' }] }, { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#b0d5de' }] }, { featureType: 'water', elementType: 'labels', stylers: [{ visibility: 'off' }] }],
 		};
 		return dataValues;
 	},

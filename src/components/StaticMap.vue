@@ -4,6 +4,8 @@
 
 <script>
 
+import _ from 'lodash';
+
 const BASE_URL_MAP = 'https://maps.googleapis.com/maps/api/staticmap?';
 
 function generateFormatMap() {
@@ -20,7 +22,7 @@ function generateMapType() {
 }
 
 function generateMapUrl() {
-	const mapUrl = `${BASE_URL_MAP}center=${this.center}&zoom=${this.zoom}&size=${this.sizeMap}&maptype=${this.mapTypeMap}&format=${this.formatMap}&key=${this.googleApiKey}&scale=${this.scaleMap}&language=${this.language}${this.markersMap}${this.pathsMap}`;
+	const mapUrl = `${BASE_URL_MAP}center=${this.center}&zoom=${this.zoom}&size=${this.sizeMap}&maptype=${this.mapTypeMap}&format=${this.formatMap}&key=${this.googleApiKey}&scale=${this.scaleMap}${this.styleMap}&language=${this.language}${this.markersMap}${this.pathsMap}`;
 	this.$emit('get-url', mapUrl);
 	return mapUrl;
 }
@@ -89,6 +91,37 @@ function generateSizeMap() {
 	throw Error('Size must have 2 values: WIDTH AND HEIGHT');
 }
 
+function generateStyleMap() {
+	let styleString = '';
+	let styleSubString = '';
+	this.styles.forEach((style) => {
+		if (style.featureType || style.elementType) {
+			styleSubString = '&style=';
+			if (style.featureType) {
+				styleSubString += `feature:${style.featureType}`;
+			}
+			if (style.elementType) {
+				if (style.featureType) {
+					styleSubString += '%7C';
+				}
+				styleSubString += `element:${style.elementType}`;
+			}
+			if (style.stylers) {
+				style.stylers.forEach((styler) => {
+					if (style.elementType) {
+						styleSubString += '%7C';
+					}
+					const key = _.head(_.keys(styler));
+					const value = styler[key].replace('#', '');
+					styleSubString += `${key}:0x${value}`;
+				});
+			}
+			styleString += styleSubString;
+		}
+	});
+	return styleString;
+}
+
 export default {
 	computed: {
 		formatMap: generateFormatMap,
@@ -98,6 +131,7 @@ export default {
 		pathsMap: generatePaths,
 		scaleMap: generateScaleMap,
 		sizeMap: generateSizeMap,
+		styleMap: generateStyleMap,
 	},
 	props: {
 		center: {
@@ -142,6 +176,11 @@ export default {
 		zoom: {
 			type: Number,
 			required: true,
+		},
+		styles: {
+			type: Array,
+			required: false,
+			default: () => [],
 		},
 	},
 };
